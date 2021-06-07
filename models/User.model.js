@@ -6,11 +6,9 @@ const userSchema = new Schema(
         username: {
             type: String,
             unique: true,
+            required: true,
         },
-        email: {
-            type: String,
-            unique: true,
-        },
+        password: { type: String, required: true },
         name: String,
 
         city: String,
@@ -19,12 +17,12 @@ const userSchema = new Schema(
 
         about: String,
 
-        photo: {
+        picture: {
             type: String,
         },
-
-        password: String,
+        collections: [{ type: Schema.Types.ObjectId, ref: "Artist" }],
     },
+
     {
         timestamps: true,
     }

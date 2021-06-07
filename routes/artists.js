@@ -4,7 +4,7 @@ const Artist = require("../models/Artist.model");
 router.get("/", (req, res) => {
     Artist.find({})
         .then((allArtists) => {
-            console.log(allArtists);
+            // console.log(allArtists);
             res.json(allArtists);
         })
         .catch((err) => {
