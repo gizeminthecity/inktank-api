@@ -8,7 +8,11 @@ const userSchema = new Schema(
             unique: true,
             required: true,
         },
+
         password: { type: String, required: true },
+
+        email: { type: String, unique: true, required: true },
+
         name: String,
 
         city: String,
@@ -17,10 +21,12 @@ const userSchema = new Schema(
 
         about: String,
 
-        picture: {
+        photo: {
             type: String,
+            default:
+                "https://res.cloudinary.com/gizemella/image/upload/v1619121026/new-change-org/ub50aviri68vh64fdmbo.jpg",
         },
-        collections: [{ type: Schema.Types.ObjectId, ref: "Artist" }],
+        likes: [{ type: Schema.Types.ObjectId, ref: "Artist" }],
     },
 
     {

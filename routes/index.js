@@ -13,4 +13,8 @@ router.use("/auth", authRoutes);
 const artistsRouter = require("./artists");
 router.use("/artists", artistsRouter);
 
+// User Routes
+const userRoutes = require("./user");
+router.use("/user", userRoutes);
+
 module.exports = router;

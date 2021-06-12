@@ -7,15 +7,21 @@ const artistSchema = new Schema({
 
     country: String,
 
-    picture: String,
-
     price: Number,
+
+    studio: String,
 
     consultation: Number,
 
-    works: String,
+    works: [String],
 
     about: String,
+
+    photo: {
+        type: String,
+        default:
+            "https://res.cloudinary.com/gizemella/image/upload/v1619121026/new-change-org/ub50aviri68vh64fdmbo.jpg",
+    },
 
     reviews: [
         {

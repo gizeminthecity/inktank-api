@@ -12,11 +12,12 @@ const User = require("../models/User.model");
 const Session = require("../models/Session.model");
 
 // Require necessary (isLoggedOut and isLiggedIn) middleware in order to control access to specific routes
-const isLoggedOut = require("../middlewares/isLoggedOut");
-const isLoggedIn = require("../middlewares/isLoggedIn");
+const isLoggedOut = require("../middleware/isLoggedOut");
+const isLoggedIn = require("../middleware/isLoggedIn");
 
 router.get("/session", (req, res) => {
     // we dont want to throw an error, and just maintain the user as null
+    // console.log(req);
     if (!req.headers.authorization) {
         return res.json(null);
     }
@@ -37,18 +38,30 @@ router.get("/session", (req, res) => {
 });
 
 router.post("/signup", isLoggedOut, (req, res) => {
-    const { username, password } = req.body;
+    const { username, password, email } = req.body;
 
-    if (!username) {
+    if (!username || !email || !password) {
         return res
             .status(400)
             .json({ errorMessage: "Please provide your username." });
     }
 
+    if (username.length < 4) {
+        return res
+            .status(400)
+            .json({ errorMessage: "Username is too short", key: "username" });
+    }
+    if (email.length < 8) {
+        return res.status(400).json({
+            errorMessage: "Your email needs to be at least 8 characters long.",
+            key: "email",
+        });
+    }
     if (password.length < 8) {
         return res.status(400).json({
             errorMessage:
                 "Your password needs to be at least 8 characters long.",
+            key: "password",
         });
     }
 
@@ -80,6 +93,7 @@ router.post("/signup", isLoggedOut, (req, res) => {
                 // Create a user and save it in the database
                 return User.create({
                     username,
+                    email,
                     password: hashedPassword,
                 });
             })
