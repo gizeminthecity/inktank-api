@@ -58,14 +58,21 @@ router.put(`/update`, isLoggedIn, (req, res) => {
 
 router.post("/update-photo", isLoggedIn, upload.single("photo"), (req, res) => {
     const photo = req.file.path;
-    const id = req.params.id;
+    const id = req.user._id;
 
-    User.findByIdAndUpdate(id, { photo }).then(() => {
-        res.json({
-            photoFromServer: photo,
-            message: "Photo Uploaded successfully",
+    User.findByIdAndUpdate(id, { photo }, { new: true })
+        .then((foundUser) => {
+            console.log(foundUser);
+
+            res.json({
+                photoFromServer: photo,
+                message: "Photo Uploaded successfully",
+            });
+        })
+        .catch((err) => {
+            console.log(err);
+            res.status(500).json({ errorMessage: err.message });
         });
-    });
 });
 
 module.exports = router;
