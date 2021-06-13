@@ -4,6 +4,8 @@ const User = require("../models/User.model");
 
 const isLoggedIn = require("../middleware/isLoggedIn");
 
+const upload = require("../middleware/cloudinary");
+
 // GET USER PROFILE
 
 router.get(`/`, isLoggedIn, (req, res) => {
@@ -19,9 +21,9 @@ router.get(`/`, isLoggedIn, (req, res) => {
     });
 });
 
-// EDIT USER PROFILE
+// UPDATE USER PROFILE
 
-router.put(`/edit`, isLoggedIn, (req, res) => {
+router.put(`/update`, isLoggedIn, (req, res) => {
     const { username, email } = req.body;
 
     // if (username.length < 8) {
@@ -48,6 +50,20 @@ router.put(`/edit`, isLoggedIn, (req, res) => {
             { new: true }
         ).then((updatedUser) => {
             res.json({ user: updatedUser });
+        });
+    });
+});
+
+// UPDATE PROFILE PHOTO
+
+router.post("/update-photo", isLoggedIn, upload.single("photo"), (req, res) => {
+    const photo = req.file.path;
+    const id = req.params.id;
+
+    User.findByIdAndUpdate(id, { photo }).then(() => {
+        res.json({
+            photoFromServer: photo,
+            message: "Photo Uploaded successfully",
         });
     });
 });

@@ -26,6 +26,7 @@ const userSchema = new Schema(
             default:
                 "https://res.cloudinary.com/gizemella/image/upload/v1619121026/new-change-org/ub50aviri68vh64fdmbo.jpg",
         },
+
         likes: [{ type: Schema.Types.ObjectId, ref: "Artist" }],
     },
 
