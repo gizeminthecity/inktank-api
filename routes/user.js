@@ -1,5 +1,6 @@
 const router = require("express").Router();
 
+const Session = require("../models/Session.model");
 const User = require("../models/User.model");
 
 const isLoggedIn = require("../middleware/isLoggedIn");
@@ -8,22 +9,29 @@ const upload = require("../middleware/cloudinary");
 
 // GET USER PROFILE
 
-router.get(`/`, isLoggedIn, (req, res) => {
-    console.log("RERE: ", req.params);
-    User.findOne({ username: req.params.username }).then((foundUser) => {
-        if (!foundUser) {
-            return res.status(404).json({ errMessage: "User doesn't exist" });
-        }
-        return res.json({ user: foundUser }).catch((err) => {
+router.get(`/:username`, isLoggedIn, (req, res) => {
+    User.findOne({
+        username: req.params.username,
+    })
+        .then((foundUser) => {
+            console.log(foundUser);
+            if (!foundUser) {
+                return res.status(400).json({
+                    errorMessage: "There's no user with this username!",
+                    key: "username",
+                });
+            }
+            res.json({ user: foundUser });
+        })
+        .catch((err) => {
             console.log(err);
             res.json(500).json({ errorMessage: err.message });
         });
-    });
 });
 
 // UPDATE USER PROFILE
 
-router.put(`/update`, isLoggedIn, (req, res) => {
+router.put(`/:username/update`, isLoggedIn, (req, res) => {
     const { username, email } = req.body;
 
     // if (username.length < 8) {
@@ -67,6 +75,22 @@ router.post("/update-photo", isLoggedIn, upload.single("photo"), (req, res) => {
             res.json({
                 photoFromServer: photo,
                 message: "Photo Uploaded successfully",
+            });
+        })
+        .catch((err) => {
+            console.log(err);
+            res.status(500).json({ errorMessage: err.message });
+        });
+});
+
+// DELETE USER
+
+router.delete("/delete", isLoggedIn, (req, res) => {
+    User.findByIdAndDelete(req.user._id)
+        .then((foundUser) => {
+            console.log(foundUser);
+            User.findByIdAndDelete(req.headers.authorization).then(() => {
+                res.json(true);
             });
         })
         .catch((err) => {
