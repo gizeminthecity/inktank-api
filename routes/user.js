@@ -89,7 +89,7 @@ router.delete("/delete", isLoggedIn, (req, res) => {
     User.findByIdAndDelete(req.user._id)
         .then((foundUser) => {
             console.log(foundUser);
-            User.findByIdAndDelete(req.headers.authorization).then(() => {
+            Session.findByIdAndDelete(req.headers.authorization).then(() => {
                 res.json(true);
             });
         })
