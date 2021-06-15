@@ -38,9 +38,10 @@ router.get("/session", (req, res) => {
 });
 
 router.post("/signup", isLoggedOut, (req, res) => {
-    const { username, password, email } = req.body;
+    const { username, password, email, role } = req.body;
+    console.log(req.body);
 
-    if (!username || !email || !password) {
+    if (!username || !email || !password || !role) {
         return res
             .status(400)
             .json({ errorMessage: "Please provide your username." });
@@ -95,6 +96,7 @@ router.post("/signup", isLoggedOut, (req, res) => {
                     username,
                     email,
                     password: hashedPassword,
+                    role,
                 });
             })
             .then((user) => {

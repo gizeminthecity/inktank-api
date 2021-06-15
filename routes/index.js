@@ -9,9 +9,9 @@ router.get("/", (req, res, next) => {
 const authRoutes = require("./auth");
 router.use("/auth", authRoutes);
 
-// Artist Route
-const artistsRouter = require("./artists");
-router.use("/artists", artistsRouter);
+// Studio Routes
+const studiosRouter = require("./studios");
+router.use("/studios", studiosRouter);
 
 // User Routes
 const userRoutes = require("./user");
