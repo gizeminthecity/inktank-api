@@ -13,6 +13,7 @@ const upload = require("../middleware/cloudinary");
 
 router.get("/", (req, res) => {
     Studio.find({})
+        .populate("owner")
         .then((allStudios) => {
             console.log(allStudios);
             res.json(allStudios);
@@ -27,6 +28,7 @@ router.get("/", (req, res) => {
 
 router.get("/:studioId", (req, res) => {
     Studio.findById(req.params.studioId)
+        .populate("reviews")
         .then((studio) => {
             console.log(studio);
             res.json(studio);
