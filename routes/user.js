@@ -2,6 +2,7 @@ const router = require("express").Router();
 
 const Session = require("../models/Session.model");
 const User = require("../models/User.model");
+const Work = require("../models/Work.model");
 
 const isLoggedIn = require("../middleware/isLoggedIn");
 
@@ -13,6 +14,7 @@ router.get(`/:username`, isLoggedIn, (req, res) => {
     User.findOne({
         username: req.params.username,
     })
+        .populate("works")
         .then((foundUser) => {
             console.log(foundUser);
             if (!foundUser) {
@@ -98,3 +100,40 @@ router.delete("/delete", isLoggedIn, (req, res) => {
             res.status(500).json({ errorMessage: err.message });
         });
 });
+
+// ADD WORK
+
+router.post(
+    "/:username/add-work",
+    isLoggedIn,
+    upload.single("photo"),
+    (req, res) => {
+        const photo = req.file.path;
+        const { caption } = req.body;
+
+        Work.create({
+            caption,
+            photo,
+            owner: req.user._id,
+        })
+            .then((createdPost) => {
+                User.findByIdAndUpdate(
+                    req.user._id,
+                    {
+                        $addToSet: { works: createdPost._id },
+                    },
+                    { new: true }
+                )
+                    .populate("works")
+                    .then((updatedUser) => {
+                        res.json({ user: updatedUser });
+                    });
+            })
+            .catch((err) => {
+                console.log(err);
+                res.status(500).json({ errorMessage: err.message });
+            });
+    }
+);
+
+module.exports = router;
