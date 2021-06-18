@@ -131,4 +131,29 @@ router.post("/:studioId/add-review", isLoggedIn, (req, res) => {
     });
 });
 
+// UPDATE STUDIO PHOTO
+
+router.post(
+    "/:studioId/update-photo",
+    isLoggedIn,
+    upload.single("photo"),
+    (req, res) => {
+        const photo = req.file.path;
+
+        Studio.findByIdAndUpdate(req.params.studioId, { photo }, { new: true })
+            .then((foundStudio) => {
+                console.log(foundStudio);
+
+                res.json({
+                    photoFromServer: photo,
+                    message: "Photo Uploaded successfully",
+                });
+            })
+            .catch((err) => {
+                console.log(err);
+                res.status(500).json({ errorMessage: err.message });
+            });
+    }
+);
+
 module.exports = router;

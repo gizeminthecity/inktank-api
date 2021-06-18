@@ -28,7 +28,7 @@ const studioSchema = new Schema(
             default:
                 "https://res.cloudinary.com/gizemella/image/upload/v1619121026/new-change-org/ub50aviri68vh64fdmbo.jpg",
         },
-        works: [String],
+
         reviews: [
             {
                 type: Schema.Types.ObjectId,

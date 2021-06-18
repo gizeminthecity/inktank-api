@@ -98,5 +98,3 @@ router.delete("/delete", isLoggedIn, (req, res) => {
             res.status(500).json({ errorMessage: err.message });
         });
 });
-
-module.exports = router;
