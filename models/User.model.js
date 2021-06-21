@@ -29,6 +29,18 @@ const userSchema = new Schema(
 
         about: String,
 
+        studio: {
+            type: Schema.Types.ObjectId,
+            ref: "Work",
+        },
+
+        works: [
+            {
+                type: Schema.Types.ObjectId,
+                ref: "Work",
+            },
+        ],
+
         likes: [
             {
                 type: Schema.Types.ObjectId,
