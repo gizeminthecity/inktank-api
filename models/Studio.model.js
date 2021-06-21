@@ -6,11 +6,6 @@ const studioSchema = new Schema(
             type: String,
             required: true,
         },
-        owner: {
-            type: Schema.Types.ObjectId,
-            ref: "User",
-            required: true,
-        },
         about: String,
 
         city: String,
@@ -28,17 +23,15 @@ const studioSchema = new Schema(
             default:
                 "https://res.cloudinary.com/gizemella/image/upload/v1619121026/new-change-org/ub50aviri68vh64fdmbo.jpg",
         },
-
+        owner: {
+            type: Schema.Types.ObjectId,
+            ref: "User",
+            required: true,
+        },
         reviews: [
             {
                 type: Schema.Types.ObjectId,
                 ref: "Review",
-            },
-        ],
-        ratings: [
-            {
-                type: Schema.Types.ObjectId,
-                ref: "Rating",
             },
         ],
     },

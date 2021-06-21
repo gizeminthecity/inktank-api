@@ -29,7 +29,7 @@ const userSchema = new Schema(
 
         about: String,
 
-        works: [
+        likes: [
             {
                 type: Schema.Types.ObjectId,
                 ref: "Work",

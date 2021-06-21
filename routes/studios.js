@@ -9,6 +9,47 @@ const isLoggedIn = require("../middleware/isLoggedIn");
 
 const upload = require("../middleware/cloudinary");
 
+// ADD STUDIO
+
+router.post("/add", isLoggedIn, (req, res) => {
+    User.findOne({ _id: req.user._id })
+        .then((foundUser) => {
+            console.log("FOUND USER: ", foundUser);
+            const {
+                name,
+                city,
+                country,
+                location,
+                about,
+                consultation,
+                price,
+            } = req.body;
+
+            Studio.create({
+                name,
+                city,
+                country,
+                location,
+                consultation,
+                price,
+                about,
+                owner: foundUser,
+            })
+                .then((createdStudio) => {
+                    console.log("NEW STUDIO: ", createdStudio);
+                    res.json({ studio: createdStudio });
+                })
+                .catch((err) => {
+                    console.log(err);
+                    res.status(500).json({ errorMessage: err.message });
+                });
+        })
+        .catch((err) => {
+            console.log(err);
+            res.status(500).json({ errorMessage: err.message });
+        });
+});
+
 // ALL STUDIOS
 
 router.get("/", (req, res) => {
@@ -26,7 +67,7 @@ router.get("/", (req, res) => {
 
 // SINGLE STUDIO
 
-router.get("/:studioId", (req, res) => {
+router.get("/:studioId", isLoggedIn, (req, res) => {
     Studio.findById(req.params.studioId)
         .populate("reviews")
         .then((studio) => {
@@ -34,59 +75,24 @@ router.get("/:studioId", (req, res) => {
             res.json(studio);
         })
         .catch((err) => {
-            console.error(err);
+            console.log(err);
+            res.status(500).json({ errorMessage: err.message });
         });
 });
 
-// ADD STUDIO
+// EDIT STUDIO
 
-router.post("/add", isLoggedIn, (req, res) => {
-    // const photo = req.file?.path;
-
-    const {
-        name,
-        city,
-        country,
-        location,
-        about,
-        consultation,
-        price,
-    } = req.body;
-
-    Studio.create({
-        name,
-        city,
-        country,
-        location,
-        consultation,
-        price,
-        // photo,
-        about,
-        owner: req.user._id,
-    })
-        .then((createdStudio) => {
-            // console.log("NEW STUDIO: ", createdStudio);
-            res.json({ studio: createdStudio });
+router.get("/:studioId/edit", isLoggedIn, (req, res) => {
+    Studio.findById(req.params.studioId)
+        .then((studio) => {
+            console.log("STUDIO: ", studio);
+            res.json(studio);
         })
         .catch((err) => {
             console.log(err);
             res.status(500).json({ errorMessage: err.message });
         });
 });
-
-// router.get("/:studioId", isLoggedIn, (req, res) => {
-//     Studio.findOne({ _id: req.params.studioId })
-//         .then((foundStudio) => {
-//             console.log("foundStudio: ", foundStudio);
-//             res.json({ studio: foundStudio });
-//         })
-//         .catch((err) => {
-//             console.log(err);
-//             res.json(500).json({ errorMessage: err.message });
-//         });
-// });
-
-// EDIT STUDIO
 
 router.put("/:studioId/edit", isLoggedIn, (req, res) => {
     Studio.findById(req.params.studioId).then((foundStudio) => {

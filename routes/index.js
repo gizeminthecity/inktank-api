@@ -10,11 +10,20 @@ const authRoutes = require("./auth");
 router.use("/auth", authRoutes);
 
 // Studio Routes
-const studiosRouter = require("./studios");
-router.use("/studios", studiosRouter);
+const studioRoutes = require("./studios");
+router.use("/studios", studioRoutes);
 
 // User Routes
 const userRoutes = require("./user");
 router.use("/user", userRoutes);
+
+// Work Routes
+const workRoutes = require("./works");
+router.use("/works", workRoutes);
+
+//Artist Routes
+
+const artistsRoutes = require("./artists");
+router.use("/artists", artistsRoutes);
 
 module.exports = router;
