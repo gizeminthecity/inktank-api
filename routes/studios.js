@@ -163,4 +163,39 @@ router.post(
     }
 );
 
+// DELETE STUDIO
+
+router.get("/:studioId/delete", isLoggedIn, (req, res) => {
+    Studio.findByIdAndDelete(req.params.studioId)
+        .then(() => {
+            res.json(true);
+        })
+        .catch((err) => {
+            console.log(err);
+            res.status(500).json({ errorMessage: err.message });
+        });
+});
+
+router.get("/:workId/delete", isLoggedIn, (req, res) => {
+    Work.findByIdAndDelete(req.params.workId)
+        .populate("owner")
+        .then((foundWork) => {
+            console.log("DELETE WORK: ", foundWork);
+            User.findByIdAndUpdate(foundWork.owner._id, {
+                $pull: { likes: foundWork._id },
+            })
+                .then((response) => {
+                    res.json(true);
+                })
+                .catch((err) => {
+                    console.log(err);
+                    res.status(500).json({ errorMessage: err.message });
+                });
+        })
+        .catch((err) => {
+            console.log(err);
+            res.status(500).json({ errorMessage: err.message });
+        });
+});
+
 module.exports = router;
