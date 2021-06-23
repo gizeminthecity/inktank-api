@@ -15,6 +15,7 @@ router.get(`/:username`, isLoggedIn, (req, res) => {
         username: req.params.username,
     })
         .populate("works")
+        .populate("Likes")
         .then((foundUser) => {
             console.log(foundUser);
             if (!foundUser) {

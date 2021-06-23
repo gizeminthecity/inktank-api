@@ -28,12 +28,6 @@ const studioSchema = new Schema(
             ref: "User",
             required: true,
         },
-        works: [
-            {
-                type: Schema.Types.ObjectId,
-                ref: "Work",
-            },
-        ],
         reviews: [
             {
                 type: Schema.Types.ObjectId,

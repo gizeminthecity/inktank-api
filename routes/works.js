@@ -26,11 +26,11 @@ router.post("/add", isLoggedIn, upload.single("photo"), (req, res) => {
                     likes: [req.user_id],
                 })
                     .then((createdWork) => {
-                        User.findByIdAndUpdate(req.user._id, {
-                            $push: { works: createdWork._id },
-                        }).catch((err) => {
-                            res.status(500).json({ errorMessage: err.message });
-                        });
+                        // User.findByIdAndUpdate(req.user._id, {
+                        //     $push: { works: createdWork._id },
+                        // }).catch((err) => {
+                        //     res.status(500).json({ errorMessage: err.message });
+                        // });
                         res.json({ createdWork });
                     })
                     .catch((err) => {
@@ -42,6 +42,21 @@ router.post("/add", isLoggedIn, upload.single("photo"), (req, res) => {
         .catch((err) => {
             console.log(err);
             res.status(500).json({ errorMessage: err.message });
+        });
+});
+
+//GET ALL WORKS
+
+router.get("/explore", isLoggedIn, (req, res) => {
+    Work.find({})
+        .populate("owner")
+        .then((allWorks) => {
+            // console.log("ALL WORKS: ", allWorks);
+            res.json(allWorks);
+        })
+        .catch((err) => {
+            console.log(err);
+            res.json(500).json({ errorMessage: err.message });
         });
 });
 
@@ -62,13 +77,13 @@ router.get("/:username", isLoggedIn, (req, res) => {
 
 // LIKE
 
-router.put("/:workId/like", isLoggedIn, (req, res) => {
+router.get("/explore/:workId/like", isLoggedIn, (req, res) => {
     User.findById(req.user._id)
         .then((foundUser) => {
             Work.findByIdAndUpdate(
                 req.params.workId,
                 {
-                    $addToSet: { likes: foundUser._id },
+                    $push: { likes: foundUser._id },
                 },
                 { new: true }
             )
@@ -95,16 +110,34 @@ router.put("/:workId/like", isLoggedIn, (req, res) => {
         });
 });
 
-router.put("/unlike", isLoggedIn, (req, res) => {
-    Work.findByIdAndUpdate(
-        req.body._id,
-        {
-            $pull: { likes: req.user._id },
-        },
-        { new: true }
-    )
-        .then((addLike) => {
-            res.json({ work: addLike });
+//UNLIKE
+router.get("/explore/:workId/unlike", isLoggedIn, (req, res) => {
+    User.findById(req.user._id)
+        .then((foundUser) => {
+            console.log("PARAMSSS", req.params);
+            Work.findByIdAndUpdate(
+                req.params.workId,
+                {
+                    $pull: { likes: foundUser._id },
+                },
+                { new: true }
+            )
+                .then((likedPhoto) => {
+                    User.findByIdAndUpdate(req.user._id, {
+                        $pull: { likes: likedPhoto._id },
+                    })
+                        .then((response) => {
+                            res.json(response);
+                        })
+                        .catch((err) => {
+                            console.log(err);
+                            res.status(500).json({ errorMessage: err.message });
+                        });
+                })
+                .catch((err) => {
+                    console.log(err);
+                    res.status(500).json({ errorMessage: err.message });
+                });
         })
         .catch((err) => {
             console.log(err);
@@ -112,27 +145,28 @@ router.put("/unlike", isLoggedIn, (req, res) => {
         });
 });
 
-// ADD REVIEW
+// DELETE WORK
 
-router.post("/:workId/add-review", isLoggedIn, (req, res) => {
-    const { title, body } = req.body;
-    if (!title || !body) {
-        return res.status(400).json({ errMessage: "Please fill the form " });
-    }
-
-    Review.create({ title, body, user: req.user._id }).then((newReview) => {
-        Work.findByIdAndUpdate(
-            req.params.workId,
-            {
-                $addToSet: { reviews: newReview._id },
-            },
-            { new: true }
-        )
-            .populate("reviews")
-            .then((updatedWork) => {
-                res.json({ work: updatedWork });
-            });
-    });
+router.get("/:workId/delete", isLoggedIn, (req, res) => {
+    Work.findByIdAndDelete(req.params.workId)
+        .populate("owner")
+        .then((foundWork) => {
+            console.log("DELETE WORK: ", foundWork);
+            User.findByIdAndUpdate(foundWork.owner._id, {
+                $pull: { likes: foundWork._id },
+            })
+                .then((response) => {
+                    res.json(true);
+                })
+                .catch((err) => {
+                    console.log(err);
+                    res.status(500).json({ errorMessage: err.message });
+                });
+        })
+        .catch((err) => {
+            console.log(err);
+            res.status(500).json({ errorMessage: err.message });
+        });
 });
 
 module.exports = router;

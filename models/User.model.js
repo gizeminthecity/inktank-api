@@ -34,13 +34,6 @@ const userSchema = new Schema(
             ref: "Work",
         },
 
-        works: [
-            {
-                type: Schema.Types.ObjectId,
-                ref: "Work",
-            },
-        ],
-
         likes: [
             {
                 type: Schema.Types.ObjectId,

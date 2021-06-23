@@ -97,6 +97,7 @@ router.get("/:studioId/edit", isLoggedIn, (req, res) => {
 router.put("/:studioId/edit", isLoggedIn, (req, res) => {
     Studio.findById(req.params.studioId).then((foundStudio) => {
         console.log("Found Studio: ", foundStudio);
+
         const { name, about, consultation, price, location } = req.body;
         Studio.findByIdAndUpdate(
             req.params.studioId,
