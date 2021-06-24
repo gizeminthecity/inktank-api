@@ -18,6 +18,10 @@ const studioSchema = new Schema(
 
         consultation: Number,
 
+        email: String,
+
+        username: String,
+
         photo: {
             type: String,
             default:

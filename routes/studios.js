@@ -23,6 +23,8 @@ router.post("/add", isLoggedIn, (req, res) => {
                 about,
                 consultation,
                 price,
+                email,
+                username,
             } = req.body;
 
             Studio.create({
@@ -33,6 +35,8 @@ router.post("/add", isLoggedIn, (req, res) => {
                 consultation,
                 price,
                 about,
+                username,
+                email,
                 owner: foundUser,
             })
                 .then((createdStudio) => {
