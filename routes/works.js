@@ -158,6 +158,16 @@ router.get("/:workId/delete", isLoggedIn, (req, res) => {
                     res.status(500).json({ errorMessage: err.message });
                 });
         })
+        .catch((err) => {});
+});
+
+// GET SINGLE WORK
+
+router.get("/:workId", isLoggedIn, (req, res) => {
+    Work.findOne({ _id: req.params.workId })
+        .then((foundWork) => {
+            res.json({ work: foundWork });
+        })
         .catch((err) => {
             console.log(err);
             res.status(500).json({ errorMessage: err.message });
