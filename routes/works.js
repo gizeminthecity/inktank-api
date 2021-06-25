@@ -23,14 +23,9 @@ router.post("/add", isLoggedIn, upload.single("photo"), (req, res) => {
                     caption,
                     photo,
                     owner: req.user._id,
-                    likes: [req.user_id],
+                    likes: [],
                 })
                     .then((createdWork) => {
-                        // User.findByIdAndUpdate(req.user._id, {
-                        //     $push: { works: createdWork._id },
-                        // }).catch((err) => {
-                        //     res.status(500).json({ errorMessage: err.message });
-                        // });
                         res.json({ createdWork });
                     })
                     .catch((err) => {
