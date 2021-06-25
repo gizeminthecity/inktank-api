@@ -44,7 +44,7 @@ const userSchema = new Schema(
         photo: {
             type: String,
             default:
-                "https://res.cloudinary.com/gizemella/image/upload/v1619121026/new-change-org/ub50aviri68vh64fdmbo.jpg",
+                "https://res.cloudinary.com/gizemella/image/upload/v1624625927/inktank/2019-10-19_14.13.08_em6f1a.jpg",
         },
     },
 
